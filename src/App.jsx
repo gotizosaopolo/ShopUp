@@ -1,12 +1,21 @@
-import { useState } from "react"
+import { Route, Routes } from "react-router-dom"
+import "./App.css"
+import Home from "./pages/Home"
+import Auth from "./pages/Auth"
+import Checkout from "./pages/Checkout"
+import Navbar from "./components/Navbar"
+
 function App() {
-  const [name, setName] = useState("")
 
   return (
-    <>
-      <input type='text' placeholder='votre Blaz' onChange={(e)=>{setName(e.target.value)}}/>
-      {name}
-    </>
+    <div className="app">
+      <Navbar/>
+      <Routes>
+        <Route path="/" element={<Home/>} />
+        <Route path="/auth" element={<Auth/>} />
+        <Route path="/checkout" element={<Checkout/>} />
+      </Routes>
+    </div>
   )
 }
 
