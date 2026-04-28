@@ -1,4 +1,5 @@
 import { createContext, useState, useContext } from "react";
+import { getProductById } from "../data/products";
 
 const CardContext = createContext(null);
 
@@ -21,8 +22,45 @@ export default function AuthProvider({ children }) {
 
   }
 
+
+  function getCardItemsWithProducts() {
+
+    return cardItems
+      .map((item) => ({
+        ...item,
+        product: getProductById(item.id),
+      }))
+      .filter((item) => item.product);
+  }
+
+  function removeFromCard(productId){
+    setCardItems(cardItems.filter((item)=>item.id !==productId))
+  }
+
+  function updateQuantity(productId,quantity){
+    if(quantity<=0){
+      removeFromCard(productId)
+      return;
+    }
+    setCardItems(cardItems.map((item)=>
+      item.id === productId ? {...item, quantity}:item
+    ))
+  }
+
+  function getCardTotal(){
+    const total = cardItems.reduce((total,item)=>{
+      const product = getProductById(item.id);
+      return total + (product ? product.price * item.quantity : 0);
+    },0);
+    return total;
+  }
+
+  function clearCard(){
+    setCardItems([]);
+  }
+
   return (
-    <CardContext.Provider value={{cardItems,addToCard}}>
+    <CardContext.Provider value={{cardItems,clearCard, getCardTotal, addToCard,getCardItemsWithProducts,removeFromCard,updateQuantity}}>
       {children}
     </CardContext.Provider>
   );
